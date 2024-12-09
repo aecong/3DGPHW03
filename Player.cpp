@@ -254,7 +254,7 @@ void CPlayer::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamer
 	DWORD nCameraMode = (pCamera) ? pCamera->GetMode() : 0x00;
 	if (nCameraMode == THIRD_PERSON_CAMERA)
 	{
-		//if (m_pShader) m_pShader->Render(pd3dCommandList, pCamera, 0);
+		if (m_pShader) m_pShader->Render(pd3dCommandList, pCamera, 0); // 플레이어 텍스쳐 렌더링 나이스!
 		CGameObject::Render(pd3dCommandList, pCamera);
 	}
 }
@@ -266,12 +266,12 @@ CAirplanePlayer::CAirplanePlayer(ID3D12Device *pd3dDevice, ID3D12GraphicsCommand
 {
 	m_pCamera = ChangeCamera(FIRST_PERSON_CAMERA, 0.0f);
 
-	CreateShaderVariables(pd3dDevice, pd3dCommandList); // 씨발
+	CreateShaderVariables(pd3dDevice, pd3dCommandList); // ??
 
 	CGameObject *pGameObject = CGameObject::LoadGeometryFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, "Model/Mi24.bin", m_pShader);
 	SetChild(pGameObject);
 
-	// 씨발
+	// ??
 	UINT ncbElementBytes = ((sizeof(CB_PLAYER_INFO) + 255) & ~255); //256의 배수
 
 	m_pShader = new CPlayerShader();

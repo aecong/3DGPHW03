@@ -439,17 +439,17 @@ ID3D12RootSignature *CScene::CreateGraphicsRootSignature(ID3D12Device *pd3dDevic
 
 	pd3dRootParameters[12].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
 	pd3dRootParameters[12].DescriptorTable.NumDescriptorRanges = 1;
-	pd3dRootParameters[12].DescriptorTable.pDescriptorRanges = &pd3dDescriptorRanges[8]; //t17: gtxtRandomOnSphereTexture
+	pd3dRootParameters[12].DescriptorTable.pDescriptorRanges = &pd3dDescriptorRanges[8]; //t16: gtxtRandomOnSphereTexture
 	pd3dRootParameters[12].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
 
 	pd3dRootParameters[13].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
-	pd3dRootParameters[13].Descriptor.ShaderRegister = 4; //Reflection Matrix
+	pd3dRootParameters[13].Descriptor.ShaderRegister = 5; //Reflection Matrix
 	pd3dRootParameters[13].Descriptor.RegisterSpace = 0;
 	pd3dRootParameters[13].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
 
 	pd3dRootParameters[14].ParameterType = D3D12_ROOT_PARAMETER_TYPE_32BIT_CONSTANTS;
 	pd3dRootParameters[14].Constants.Num32BitValues = 1;
-	pd3dRootParameters[14].Constants.ShaderRegister = 5; //Apply Reflection
+	pd3dRootParameters[14].Constants.ShaderRegister = 6; //Apply Reflection
 	pd3dRootParameters[14].Constants.RegisterSpace = 0;
 	pd3dRootParameters[14].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
 
@@ -522,6 +522,11 @@ ID3D12RootSignature *CScene::CreateGraphicsRootSignature(ID3D12Device *pd3dDevic
 	ID3DBlob *pd3dSignatureBlob = NULL;
 	ID3DBlob *pd3dErrorBlob = NULL;
 	HRESULT hr = D3D12SerializeRootSignature(&d3dRootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1, &pd3dSignatureBlob, &pd3dErrorBlob);
+
+	if (pd3dErrorBlob) {
+		OutputDebugStringA((char*)pd3dErrorBlob->GetBufferPointer());
+		pd3dErrorBlob->Release();
+	}
 
 	pd3dDevice->CreateRootSignature(0, pd3dSignatureBlob->GetBufferPointer(), pd3dSignatureBlob->GetBufferSize(), __uuidof(ID3D12RootSignature), (void **)&pd3dGraphicsRootSignature);
 	if (pd3dSignatureBlob) pd3dSignatureBlob->Release();
@@ -732,11 +737,11 @@ void CMainScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 	m_pBillboardObjectsShader = new CBillboardObjectsShader();
 	int nBillboardObjects = m_pBillboardObjectsShader->GetNumberOfObjects();
 
-	CObjectsShader* pObjectsShader = new CObjectsShader();
-	int nObjects = pObjectsShader->GetNumberOfObjects();
+	//CObjectsShader* pObjectsShader = new CObjectsShader();
+	//int nObjects = pObjectsShader->GetNumberOfObjects();
 
 	m_pDescriptorHeap = new CDescriptorHeap();
-	CreateCbvSrvDescriptorHeaps(pd3dDevice, nBillboardObjects + nObjects + 30 + 1 + 1 + 1 + 1 , nBillboardObjects + 1  + nObjects + 1 + 1); //SuperCobra(50), Player:Mi24(1), Skybox(1), Terrain(1)
+	CreateCbvSrvDescriptorHeaps(pd3dDevice, nBillboardObjects + /*nObjects*/ + 30 + 1 + 1 + 1 + 1, nBillboardObjects + 1 + /*nObjects*/ + 1 + 1); //SuperCobra(50), Player:Mi24(1), Skybox(1), Terrain(1)
 	
 	m_nParticleObjects = 1;
 	m_ppParticleObjects = new CParticleObject * [m_nParticleObjects];
@@ -762,14 +767,19 @@ void CMainScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 	m_nShaders = 1;
 	m_ppShaders = new CShader * [m_nShaders];
 
-	pObjectsShader->CreateShader(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
-	pObjectsShader->BuildObjects(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);	
-	m_ppShaders[0] = pObjectsShader;
+	//pObjectsShader->CreateShader(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
+	//pObjectsShader->BuildObjects(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);	
+	//m_ppShaders[0] = pObjectsShader;
+
+	CPlanarMirrorShader* pMirrorShader = new CPlanarMirrorShader();
+	pMirrorShader->CreateShader(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
+	pMirrorShader->BuildObjects(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, m_pTerrain);
+	m_ppShaders[0] = pMirrorShader;
 
 	m_pBillboardObjectsShader->CreateShader(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 	m_pBillboardObjectsShader->BuildObjects(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, m_pTerrain);
 
-	m_nGameObjects = 10;
+	/*m_nGameObjects = 10;
 
 	m_ppGameObjects = new CGameObject * [m_nGameObjects];
 
@@ -790,7 +800,7 @@ void CMainScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 		CSkyIsland* pSkyIsland = new  CSkyIsland(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 		pSkyIsland->SetPosition(cubePositions[i]);
 		m_ppGameObjects[i] = pSkyIsland;
-	}
+	}*/
 
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
 }

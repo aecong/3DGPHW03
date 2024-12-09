@@ -483,20 +483,6 @@ void CGameObject::Animate(float fTimeElapsed, XMFLOAT4X4* pxmf4x4Parent)
 	if (m_fMovingSpeed != 0.0f) Move(m_xmf3MovingDirection, m_fMovingSpeed * fTimeElapsed);
 
 	m_xmOOBB.Center = GetPosition();
-
-	//if (m_pMesh) {
-	//	m_pMesh->m_xmOOBB.Transform(m_xmOOBB, XMLoadFloat4x4(&m_xmf4x4World));
-	//	XMStoreFloat4(&m_xmOOBB.Orientation, XMQuaternionNormalize(XMLoadFloat4(&m_xmOOBB.Orientation)));
-	//}
-
-	//if (m_ppMeshes)
-	//{
-	//	for (int i = 0; i < m_nMeshes; i++)
-	//	{
-	//		m_ppMeshes[i]->m_xmOOBB.Transform(m_xmOOBB, XMLoadFloat4x4(&m_xmf4x4World));
-	//		XMStoreFloat4(&m_xmOOBB.Orientation, XMQuaternionNormalize(XMLoadFloat4(&m_xmOOBB.Orientation)));
-	//	}
-	//}
 }
 
 CGameObject *CGameObject::FindFrame(char *pstrFrameName)
@@ -533,7 +519,8 @@ void CGameObject::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pC
 				}
 			}
 
-			if (m_pMesh) m_pMesh->Render(pd3dCommandList, i);
+			if (m_pMesh) 
+				m_pMesh->Render(pd3dCommandList, i);
 		}
 	}
 	if (m_ppMeshes)
@@ -543,6 +530,38 @@ void CGameObject::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pC
 			if (m_ppMeshes[i]) m_ppMeshes[i]->Render(pd3dCommandList);
 		}
 	}
+	/*if (m_nMaterials > 1)
+	{
+		for (int i = 0; i < m_nMaterials; i++)
+		{
+			if (m_ppMaterials[i])
+			{
+				if (m_ppMaterials[i]->m_pShader) m_ppMaterials[i]->m_pShader->Render(pd3dCommandList, pCamera);
+				m_ppMaterials[i]->UpdateShaderVariables(pd3dCommandList);
+			}
+
+			if (m_nMeshes == 1)
+			{
+				if (m_ppMeshes[0]) m_ppMeshes[0]->Render(pd3dCommandList, i);
+			}
+		}
+	}
+	else
+	{
+		if ((m_nMaterials == 1) && (m_ppMaterials[0]))
+		{
+			if (m_ppMaterials[0]->m_pShader) m_ppMaterials[0]->m_pShader->Render(pd3dCommandList, pCamera);
+			m_ppMaterials[0]->UpdateShaderVariables(pd3dCommandList);
+		}
+
+		if (m_ppMeshes)
+		{
+			for (int i = 0; i < m_nMeshes; i++)
+			{
+				if (m_ppMeshes[i]) m_ppMeshes[i]->Render(pd3dCommandList, 0);
+			}
+		}
+	}*/
 	if (m_pSibling) m_pSibling->Render(pd3dCommandList, pCamera);
 	if (m_pChild) m_pChild->Render(pd3dCommandList, pCamera);
 }
@@ -558,7 +577,7 @@ void CGameObject::CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12Graphics
 void CGameObject::UpdateShaderVariables(ID3D12GraphicsCommandList *pd3dCommandList)
 {
 	// 8-7
-	if (m_pcbMappedGameObject) XMStoreFloat4x4(&m_pcbMappedGameObject->m_xmf4x4World, XMMatrixTranspose(XMLoadFloat4x4(&m_xmf4x4World)));
+	//if (m_pcbMappedGameObject) XMStoreFloat4x4(&m_pcbMappedGameObject->m_xmf4x4World, XMMatrixTranspose(XMLoadFloat4x4(&m_xmf4x4World)));
 	// 8-4
 	//XMStoreFloat4x4(&m_pcbMappedGameObject->m_xmf4x4World, XMMatrixTranspose(XMLoadFloat4x4(&m_xmf4x4World)));
 
@@ -1023,6 +1042,7 @@ void CSkyBox::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamer
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 CSuperCobraObject::CSuperCobraObject(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, ID3D12RootSignature *pd3dGraphicsRootSignature)
+
 {
 	m_xmOOBB.Center = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	m_xmOOBB.Extents = XMFLOAT3(15, 10, 20);
@@ -1057,17 +1077,17 @@ void CSuperCobraObject::Animate(float fTimeElapsed, XMFLOAT4X4 *pxmf4x4Parent)
 
 void CSuperCobraObject::OnPrepareRender()
 {
-	XMFLOAT3					m_xmf3Position = GetPosition();
-	XMFLOAT3					m_xmf3Right = GetRight();
-	XMFLOAT3					m_xmf3Up = GetUp();
-	XMFLOAT3					m_xmf3Look = GetLook();
+	//XMFLOAT3					m_xmf3Position = GetPosition();
+	//XMFLOAT3					m_xmf3Right = GetRight();
+	//XMFLOAT3					m_xmf3Up = GetUp();
+	//XMFLOAT3					m_xmf3Look = GetLook();
 
-	m_xmf4x4Transform._11 = m_xmf3Right.x; m_xmf4x4Transform._12 = m_xmf3Right.y; m_xmf4x4Transform._13 = m_xmf3Right.z;
-	m_xmf4x4Transform._21 = m_xmf3Up.x; m_xmf4x4Transform._22 = m_xmf3Up.y; m_xmf4x4Transform._23 = m_xmf3Up.z;
-	m_xmf4x4Transform._31 = m_xmf3Look.x; m_xmf4x4Transform._32 = m_xmf3Look.y; m_xmf4x4Transform._33 = m_xmf3Look.z;
-	m_xmf4x4Transform._41 = m_xmf3Position.x; m_xmf4x4Transform._42 = m_xmf3Position.y; m_xmf4x4Transform._43 = m_xmf3Position.z;
+	//m_xmf4x4Transform._11 = m_xmf3Right.x; m_xmf4x4Transform._12 = m_xmf3Right.y; m_xmf4x4Transform._13 = m_xmf3Right.z;
+	//m_xmf4x4Transform._21 = m_xmf3Up.x; m_xmf4x4Transform._22 = m_xmf3Up.y; m_xmf4x4Transform._23 = m_xmf3Up.z;
+	//m_xmf4x4Transform._31 = m_xmf3Look.x; m_xmf4x4Transform._32 = m_xmf3Look.y; m_xmf4x4Transform._33 = m_xmf3Look.z;
+	//m_xmf4x4Transform._41 = m_xmf3Position.x; m_xmf4x4Transform._42 = m_xmf3Position.y; m_xmf4x4Transform._43 = m_xmf3Position.z;
 
-	UpdateTransform(NULL);
+	//UpdateTransform(NULL);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1473,7 +1493,7 @@ CMirror::CMirror(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dComman
 
 	CTexture* pMirrorTexture = new CTexture(1, RESOURCE_TEXTURE2D, 0, 1, false);
 	pMirrorTexture->LoadTextureFromDDSFile(pd3dDevice, pd3dCommandList, L"Image/Lava(Emissive).dds", RESOURCE_TEXTURE2D, 0);
-	CScene::CreateShaderResourceViews(pd3dDevice, pMirrorTexture, 0, 3);
+	CScene::CreateShaderResourceViews(pd3dDevice, pMirrorTexture, 0, 5);
 
 	CMaterial* pMirrorMaterial = new CMaterial();
 	pMirrorMaterial->SetTexture(pMirrorTexture);
@@ -1494,12 +1514,14 @@ void CMirror::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamer
 //
 CWall::CWall(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature) : CGameObject(1, 1)
 {
-	CTexturedCubeMesh* pCubeMesh = new CTexturedCubeMesh(pd3dDevice, pd3dCommandList, 240.0f, 240.0f, 10.0f);
+	CCubeMeshTextured* pCubeMesh = new CCubeMeshTextured(pd3dDevice, pd3dCommandList, 240.0f, 240.0f, 10.0f);
 	SetMesh(0, pCubeMesh);
+
+	CreateShaderVariables(pd3dDevice, pd3dCommandList);
 
 	CTexture* pWallTexture = new CTexture(1, RESOURCE_TEXTURE2D, 0, 1, false);
 	pWallTexture->LoadTextureFromDDSFile(pd3dDevice, pd3dCommandList, L"Image/stones.dds", RESOURCE_TEXTURE2D, 0);
-	CScene::CreateShaderResourceViews(pd3dDevice, pWallTexture, 0, 3);
+	CScene::CreateShaderResourceViews(pd3dDevice, pWallTexture, 0, 5);
 
 	CMaterial* pWallMaterial = new CMaterial();
 	pWallMaterial->SetTexture(pWallTexture);

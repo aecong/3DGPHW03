@@ -338,6 +338,12 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 				case VK_F9:
 					ChangeSwapChainState();
 					break;
+				case 'M':
+					m_pPlayer->SetPosition(XMFLOAT3(907, 210, 1385));
+					break;
+				case 'Q':
+					m_pPlayer->SetPosition(XMFLOAT3(0, 0, 0));
+					break;
 				case VK_CONTROL:
 					((CAirplanePlayer*)m_pPlayer)->FireBullet();
 					break;
@@ -470,7 +476,7 @@ void CGameFramework::BuildObjects()
 		CAirplanePlayer* pAirplanePlayer = new CAirplanePlayer(m_pd3dDevice, m_pd3dCommandList, m_ppScenes[2]->GetGraphicsRootSignature());
 		pAirplanePlayer->SetPosition(XMFLOAT3(-375.0f, 250.0f, -385.0f));
 		m_ppScenes[2]->SetPlayer(pAirplanePlayer);
-		m_ppScenes[2]->m_ppShaders[0]->SetPlayer(pAirplanePlayer);
+		//m_ppScenes[2]->m_ppShaders[0]->SetPlayer(pAirplanePlayer); 플레이어 바라보게 objectshader
 		m_ppScenes[2]->GetPlayer()->ChangeCamera(3, m_GameTimer.GetTimeElapsed());
 	}
 

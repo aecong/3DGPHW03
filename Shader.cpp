@@ -1718,7 +1718,7 @@ void CPlanarMirrorShader::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCa
 {
 	if (m_ppd3dPipelineStates[0]) pd3dCommandList->SetPipelineState(m_ppd3dPipelineStates[0]);
 
-	pd3dCommandList->SetGraphicsRoot32BitConstant(7, 0x0000, 0);
+	pd3dCommandList->SetGraphicsRoot32BitConstant(14, 0x0000, 0); // Apply Reflection RootSignature Index
 
 	for (int j = 0; j < m_nObjects; j++)
 	{
@@ -1742,9 +1742,9 @@ void CPlanarMirrorShader::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCa
 
 	XMVECTOR xmvMirrorPlane = XMVectorSet(0.0f, 0.0f, 1.0f, -1120.05f);
 	XMStoreFloat4x4(&m_pcbMappedReflection->m_xmf4x4Reflect, XMMatrixTranspose(XMMatrixReflect(xmvMirrorPlane)));
-	pd3dCommandList->SetGraphicsRootConstantBufferView(6, m_pd3dcbReflection->GetGPUVirtualAddress());
+	pd3dCommandList->SetGraphicsRootConstantBufferView(13, m_pd3dcbReflection->GetGPUVirtualAddress()); // Reflection Matrix RootSignature Index
 
-	pd3dCommandList->SetGraphicsRoot32BitConstant(7, 0xff00, 0);
+	pd3dCommandList->SetGraphicsRoot32BitConstant(14, 0xff00, 0);
 
 	if (m_ppd3dPipelineStates[4]) pd3dCommandList->SetPipelineState(m_ppd3dPipelineStates[4]); //Render Reflections
 	for (int j = 0; j < m_nObjects; j++)
@@ -1757,7 +1757,7 @@ void CPlanarMirrorShader::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCa
 		}
 	}
 
-	pd3dCommandList->SetGraphicsRoot32BitConstant(7, 0x0000, 0);
+	pd3dCommandList->SetGraphicsRoot32BitConstant(14, 0x0000, 0);
 
 	if (m_ppd3dPipelineStates[5]) pd3dCommandList->SetPipelineState(m_ppd3dPipelineStates[5]);
 	m_pMirrorObject->Render(pd3dCommandList, pCamera);

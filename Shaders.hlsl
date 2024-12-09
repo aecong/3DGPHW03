@@ -31,12 +31,12 @@ cbuffer cbFrameworkInfo : register(b3)
     int gnMaxFlareType2Particles : packoffset(c1.w);
 };
 
-cbuffer cbMirrorObjectInfo : register(b4)
+cbuffer cbMirrorObjectInfo : register(b5)
 {
     matrix gmtxReflect : packoffset(c0);
 };
 
-cbuffer cbOptionInfo : register(b5)
+cbuffer cbOptionInfo : register(b6)
 {
     uint gnApplyReflection : packoffset(c0);
 };
@@ -55,7 +55,7 @@ cbuffer cbOptionInfo : register(b5)
 #define MATERIAL_DETAIL_ALBEDO_MAP	0x20
 #define MATERIAL_DETAIL_NORMAL_MAP	0x40
 
-//#define _WITH_STANDARD_TEXTURE_MULTIPLE_PARAMETERS
+#define _WITH_STANDARD_TEXTURE_MULTIPLE_PARAMETERS
 
 #ifdef _WITH_STANDARD_TEXTURE_MULTIPLE_PARAMETERS
 Texture2D gtxtAlbedoTexture : register(t6);
@@ -94,12 +94,15 @@ VS_STANDARD_OUTPUT VSStandard(VS_STANDARD_INPUT input)
 {
 	VS_STANDARD_OUTPUT output;
 
-	output.positionW = (float3)mul(float4(input.position, 1.0f), gmtxGameObject);
-	output.normalW = mul(input.normal, (float3x3)gmtxGameObject);
-	output.tangentW = (float3)mul(float4(input.tangent, 1.0f), gmtxGameObject);
-	output.bitangentW = (float3)mul(float4(input.bitangent, 1.0f), gmtxGameObject);
-	output.position = mul(mul(float4(output.positionW, 1.0f), gmtxView), gmtxProjection);
-	output.uv = input.uv;
+    matrix mtxGameObject = gmtxGameObject;
+    if (gnApplyReflection == 0xff00)
+        mtxGameObject = mul(gmtxGameObject, gmtxReflect);
+    output.positionW = (float3) mul(float4(input.position, 1.0f), mtxGameObject);
+    output.normalW = mul(input.normal, (float3x3) mtxGameObject);
+    output.tangentW = (float3) mul(float4(input.tangent, 1.0f), mtxGameObject);
+    output.bitangentW = (float3) mul(float4(input.bitangent, 1.0f), mtxGameObject);
+    output.position = mul(mul(float4(output.positionW, 1.0f), gmtxView), gmtxProjection);
+    output.uv = input.uv;
 
 	return(output);
 }
@@ -225,7 +228,6 @@ VS_TEXTURED_OUTPUT VSTextured(VS_TEXTURED_INPUT input)
 
 float4 PSTextured(VS_TEXTURED_OUTPUT input) : SV_TARGET
 {
-	
     float4 cColor = gtxtTexture.Sample(gssWrap, input.uv);
 
     return (cColor);
