@@ -359,6 +359,24 @@ CGameObject::CGameObject(int nMaterials) : CGameObject()
 	}
 }
 
+CGameObject::CGameObject(int nMeshes, int nMaterials) : CGameObject()
+{
+	m_nMeshes = nMeshes;
+	m_ppMeshes = NULL;
+	if (m_nMeshes > 0)
+	{
+		m_ppMeshes = new CMesh * [m_nMeshes];
+		for (int i = 0; i < m_nMeshes; i++)	m_ppMeshes[i] = NULL;
+	}
+
+	m_nMaterials = nMaterials;
+	if (m_nMaterials > 0)
+	{
+		m_ppMaterials = new CMaterial * [m_nMaterials];
+		for (int i = 0; i < m_nMaterials; i++) m_ppMaterials[i] = NULL;
+	}
+}
+
 CGameObject::~CGameObject()
 {
 	if (m_pMesh) m_pMesh->Release();
@@ -1345,15 +1363,15 @@ void CGrassObject::Animate(float fTimeElapsed, XMFLOAT4X4* pxmf4x4Parent)
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // 
-CParticleObject::CParticleObject(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, XMFLOAT3 xmf3Position, XMFLOAT3 xmf3Velocity, float fLifetime, XMFLOAT3 xmf3Acceleration, XMFLOAT3 xmf3Color, XMFLOAT2 xmf2Size, UINT nMaxParticles) : CGameObject(1)
+CParticleObject::CParticleObject(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, XMFLOAT3 xmf3Position, XMFLOAT3 xmf3Velocity, float fLifetime, XMFLOAT3 xmf3Acceleration, XMFLOAT3 xmf3Color, XMFLOAT2 xmf2Size, UINT nMaxParticles) : CGameObject(1, 1)
 {
-	m_nMeshes = 1;
+	/*m_nMeshes = 1;
 	m_ppMeshes = NULL;
 	if (m_nMeshes > 0)
 	{
 		m_ppMeshes = new CMesh * [m_nMeshes];
 		for (int i = 0; i < m_nMeshes; i++)	m_ppMeshes[i] = NULL;
-	}
+	}*/
 
 	CParticleMesh* pMesh = new CParticleMesh(pd3dDevice, pd3dCommandList, xmf3Position, xmf3Velocity, fLifetime, xmf3Acceleration, xmf3Color, xmf2Size, nMaxParticles);
 	SetMesh(0, pMesh);
@@ -1448,7 +1466,7 @@ void CParticleObject::OnPostRender()
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
-CMirror::CMirror(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature)
+CMirror::CMirror(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature) : CGameObject(1, 1)
 {
 	CTexturedRectMesh* pRectMesh = new CTexturedRectMesh(pd3dDevice, pd3dCommandList, 200.0f, 200.0f, 0.0f, 0.0f, 0.0f, 0.0f);
 	SetMesh(0, pRectMesh);
@@ -1474,7 +1492,7 @@ void CMirror::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamer
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
-CWall::CWall(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature)
+CWall::CWall(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature) : CGameObject(1, 1)
 {
 	CTexturedCubeMesh* pCubeMesh = new CTexturedCubeMesh(pd3dDevice, pd3dCommandList, 240.0f, 240.0f, 10.0f);
 	SetMesh(0, pCubeMesh);

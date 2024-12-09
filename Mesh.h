@@ -175,6 +175,17 @@ public:
 	virtual ~CTexturedRectMesh();
 };
 
+class CTexturedCubeMesh : public CMesh
+{
+public:
+	CTexturedCubeMesh(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, float fWidth = 20.0f, float fHeight = 20.0f, float fDepth = 20.0f);
+	virtual ~CTexturedCubeMesh();
+
+//public:
+//	virtual void ReleaseUploadBuffers();
+//	virtual void Render(ID3D12GraphicsCommandList* pd3dCommandList, int nSubSet);
+};
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 #define PARTICLE_TYPE_EMITTER		0

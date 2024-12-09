@@ -170,6 +170,8 @@ public:
 public:
 	CGameObject();
 	CGameObject(int nMaterials);
+	CGameObject(int nMeshes, int nMaterials);
+
     virtual ~CGameObject();
 
 public:
