@@ -1445,3 +1445,55 @@ void CParticleObject::OnPostRender()
 {
 	for (int i = 0; i < m_nMeshes; i++) if (m_ppMeshes[i]) m_ppMeshes[i]->OnPostRender(0); //Read Stream Output Buffer Filled Size
 }
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+CMirror::CMirror(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature)
+{
+	CTexturedRectMesh* pRectMesh = new CTexturedRectMesh(pd3dDevice, pd3dCommandList, 200.0f, 200.0f, 0.0f, 0.0f, 0.0f, 0.0f);
+	SetMesh(0, pRectMesh);
+
+	CTexture* pMirrorTexture = new CTexture(1, RESOURCE_TEXTURE2D, 0, 1, false);
+	pMirrorTexture->LoadTextureFromDDSFile(pd3dDevice, pd3dCommandList, L"Image/Lava(Emissive).dds", RESOURCE_TEXTURE2D, 0);
+	CScene::CreateShaderResourceViews(pd3dDevice, pMirrorTexture, 0, 3);
+
+	CMaterial* pMirrorMaterial = new CMaterial();
+	pMirrorMaterial->SetTexture(pMirrorTexture);
+
+	SetMaterial(0, pMirrorMaterial);
+}
+
+CMirror::~CMirror()
+{
+}
+
+void CMirror::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera)
+{
+	CGameObject::Render(pd3dCommandList, pCamera);
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+CWall::CWall(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature)
+{
+	CTexturedCubeMesh* pCubeMesh = new CTexturedCubeMesh(pd3dDevice, pd3dCommandList, 240.0f, 240.0f, 10.0f);
+	SetMesh(0, pCubeMesh);
+
+	CTexture* pWallTexture = new CTexture(1, RESOURCE_TEXTURE2D, 0, 1, false);
+	pWallTexture->LoadTextureFromDDSFile(pd3dDevice, pd3dCommandList, L"Image/stones.dds", RESOURCE_TEXTURE2D, 0);
+	CScene::CreateShaderResourceViews(pd3dDevice, pWallTexture, 0, 3);
+
+	CMaterial* pWallMaterial = new CMaterial();
+	pWallMaterial->SetTexture(pWallTexture);
+
+	SetMaterial(0, pWallMaterial);
+}
+
+CWall::~CWall()
+{
+}
+
+void CWall::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera)
+{
+	CGameObject::Render(pd3dCommandList, pCamera);
+}
