@@ -31,6 +31,16 @@ cbuffer cbFrameworkInfo : register(b3)
     int gnMaxFlareType2Particles : packoffset(c1.w);
 };
 
+cbuffer cbMirrorObjectInfo : register(b4)
+{
+    matrix gmtxReflect : packoffset(c0);
+};
+
+cbuffer cbOptionInfo : register(b5)
+{
+    uint gnApplyReflection : packoffset(c0);
+};
+
 #include "Light.hlsl"
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -618,4 +628,25 @@ float4 PSParticleDraw(GS_PARTICLE_DRAW_OUTPUT input) : SV_TARGET
     cColor *= input.color;
 
     return (cColor);
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+struct VS_CLEARDEPTH_OUTPUT
+{
+    float4 position : SV_POSITION;
+};
+
+VS_CLEARDEPTH_OUTPUT VSClearDepth(VS_TEXTURED_INPUT input)
+{
+    VS_CLEARDEPTH_OUTPUT output;
+	
+    output.position = mul(mul(mul(float4(input.position, 1.0f), gmtxGameObject), gmtxView), gmtxProjection).xyzz;
+	
+    return (output);
+}
+
+float4 PSClearDepth(VS_CLEARDEPTH_OUTPUT input) : SV_TARGET
+{
+    return (float4(0.0f, 0.0f, 0.2f, 0.0f));
 }
