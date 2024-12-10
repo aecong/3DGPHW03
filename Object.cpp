@@ -513,10 +513,10 @@ void CGameObject::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pC
 
 				// UpdateShaderVariables(pd3dCommandList);
 
-				if (m_ppMaterials[i]->m_pTexture)
+				/*if (m_ppMaterials[i]->m_pTexture)
 				{
 					m_ppMaterials[i]->m_pTexture->UpdateShaderVariables(pd3dCommandList);
-				}
+				}*/
 			}
 
 			if (m_pMesh) 
@@ -576,7 +576,7 @@ void CGameObject::CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12Graphics
 
 void CGameObject::UpdateShaderVariables(ID3D12GraphicsCommandList *pd3dCommandList)
 {
-	// 8-7
+	// 8-7 !
 	//if (m_pcbMappedGameObject) XMStoreFloat4x4(&m_pcbMappedGameObject->m_xmf4x4World, XMMatrixTranspose(XMLoadFloat4x4(&m_xmf4x4World)));
 	// 8-4
 	//XMStoreFloat4x4(&m_pcbMappedGameObject->m_xmf4x4World, XMMatrixTranspose(XMLoadFloat4x4(&m_xmf4x4World)));
@@ -1009,7 +1009,7 @@ CSkyBox::CSkyBox(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dComman
 	//pSkyBoxTexture->LoadTextureFromDDSFile(pd3dDevice, pd3dCommandList, L"SkyBox/SkyBox_1.dds", RESOURCE_TEXTURE_CUBE, 0);
 	CScene::CreateShaderResourceViews(pd3dDevice, pSkyBoxTexture, 0, PARAMETER_SKYBOX_CUBE_TEXTURE);
 
-	// ¾¾¹ß
+	// ??
 	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255); //256ÀÇ ¹è¼ö
 
 	CSkyBoxShader *pSkyBoxShader = new CSkyBoxShader();
@@ -1214,7 +1214,7 @@ CHeightMapTerrain::CHeightMapTerrain(ID3D12Device* pd3dDevice, ID3D12GraphicsCom
 	pTerrainTexture->LoadTextureFromDDSFile(pd3dDevice, pd3dCommandList, L"Image/HeightMap(Alpha).dds", RESOURCE_TEXTURE2D, 2);
 	CScene::CreateShaderResourceViews(pd3dDevice, pTerrainTexture, 0, 6);
 
-	// ¾¾¹ß
+	// ??
 	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255); //256ÀÇ ¹è¼ö
 
 	CTerrainShader* pTerrainShader = new CTerrainShader();
@@ -1385,14 +1385,6 @@ void CGrassObject::Animate(float fTimeElapsed, XMFLOAT4X4* pxmf4x4Parent)
 // 
 CParticleObject::CParticleObject(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, XMFLOAT3 xmf3Position, XMFLOAT3 xmf3Velocity, float fLifetime, XMFLOAT3 xmf3Acceleration, XMFLOAT3 xmf3Color, XMFLOAT2 xmf2Size, UINT nMaxParticles) : CGameObject(1, 1)
 {
-	/*m_nMeshes = 1;
-	m_ppMeshes = NULL;
-	if (m_nMeshes > 0)
-	{
-		m_ppMeshes = new CMesh * [m_nMeshes];
-		for (int i = 0; i < m_nMeshes; i++)	m_ppMeshes[i] = NULL;
-	}*/
-
 	CParticleMesh* pMesh = new CParticleMesh(pd3dDevice, pd3dCommandList, xmf3Position, xmf3Velocity, fLifetime, xmf3Acceleration, xmf3Color, xmf2Size, nMaxParticles);
 	SetMesh(0, pMesh);
 
@@ -1493,7 +1485,7 @@ CMirror::CMirror(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dComman
 
 	CTexture* pMirrorTexture = new CTexture(1, RESOURCE_TEXTURE2D, 0, 1, false);
 	pMirrorTexture->LoadTextureFromDDSFile(pd3dDevice, pd3dCommandList, L"Image/Lava(Emissive).dds", RESOURCE_TEXTURE2D, 0);
-	CScene::CreateShaderResourceViews(pd3dDevice, pMirrorTexture, 0, 5);
+	CScene::CreateShaderResourceViews(pd3dDevice, pMirrorTexture, 0, 5); // 3
 
 	CMaterial* pMirrorMaterial = new CMaterial();
 	pMirrorMaterial->SetTexture(pMirrorTexture);
