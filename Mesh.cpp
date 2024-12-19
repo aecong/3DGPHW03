@@ -676,7 +676,7 @@ CHeightMapGridMesh::CHeightMapGridMesh(ID3D12Device* pd3dDevice, ID3D12GraphicsC
 	m_nStride = sizeof(CDiffused2TexturedVertex);
 	m_nOffset = 0;
 	m_nSlot = 0;
-	m_d3dPrimitiveTopology = D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP;
+	m_d3dPrimitiveTopology = D3D_PRIMITIVE_TOPOLOGY_25_CONTROL_POINT_PATCHLIST;
 
 	m_nWidth = nWidth;
 	m_nLength = nLength;
@@ -689,9 +689,12 @@ CHeightMapGridMesh::CHeightMapGridMesh(ID3D12Device* pd3dDevice, ID3D12GraphicsC
 	int czHeightMap = pHeightMapImage->GetHeightMapLength();
 
 	float fHeight = 0.0f, fMinHeight = +FLT_MAX, fMaxHeight = -FLT_MAX;
-	for (int i = 0, z = zStart; z < (zStart + nLength); z++)
+
+	int nIncrease = 3; //(Block Size == 9) ? 2, (Block Size == 13) ? 3
+
+	for (int i = 0, z = (zStart + nLength - 1); z >= zStart; z -= nIncrease)
 	{
-		for (int x = xStart; x < (xStart + nWidth); x++, i++)
+		for (int x = xStart; x < (xStart + nWidth); x += nIncrease, i++)
 		{
 			fHeight = OnGetHeight(x, z, pContext);
 			pVertices[i].m_xmf3Position = XMFLOAT3((x * m_xmf3Scale.x), fHeight, (z * m_xmf3Scale.z));
@@ -711,7 +714,7 @@ CHeightMapGridMesh::CHeightMapGridMesh(ID3D12Device* pd3dDevice, ID3D12GraphicsC
 
 	delete[] pVertices;
 
-	m_nIndices = ((nWidth * 2) * (nLength - 1)) + ((nLength - 1) - 1);
+	/*m_nIndices = ((nWidth * 2) * (nLength - 1)) + ((nLength - 1) - 1);
 	UINT* pnIndices = new UINT[m_nIndices];
 
 	for (int j = 0, z = 0; z < nLength - 1; z++)
@@ -742,7 +745,7 @@ CHeightMapGridMesh::CHeightMapGridMesh(ID3D12Device* pd3dDevice, ID3D12GraphicsC
 	m_d3dIndexBufferView.Format = DXGI_FORMAT_R32_UINT;
 	m_d3dIndexBufferView.SizeInBytes = sizeof(UINT) * m_nIndices;
 
-	delete[] pnIndices;
+	delete[] pnIndices;*/
 }
 
 

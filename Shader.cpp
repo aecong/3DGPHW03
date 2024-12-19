@@ -145,8 +145,10 @@ void CShader::CreateGraphicsPipelineState(ID3D12Device* pd3dDevice, ID3D12RootSi
 	::ZeroMemory(&d3dPipelineStateDesc, sizeof(D3D12_GRAPHICS_PIPELINE_STATE_DESC));
 	d3dPipelineStateDesc.pRootSignature = pd3dGraphicsRootSignature;
 	d3dPipelineStateDesc.VS = CreateVertexShader(nPipelineState);
-	d3dPipelineStateDesc.GS = CreateGeometryShader(nPipelineState);
+	d3dPipelineStateDesc.HS = CreateHullShader(nPipelineState);
 	d3dPipelineStateDesc.PS = CreatePixelShader(nPipelineState);
+	d3dPipelineStateDesc.GS = CreateGeometryShader(nPipelineState);
+	d3dPipelineStateDesc.DS = CreateDomainShader(nPipelineState);
 	d3dPipelineStateDesc.StreamOutput = CreateStreamOuputState(nPipelineState);
 	d3dPipelineStateDesc.RasterizerState = CreateRasterizerState(nPipelineState);
 	d3dPipelineStateDesc.BlendState = CreateBlendState(nPipelineState);
@@ -259,6 +261,8 @@ void CShader::CreateShader(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *
 
 	m_d3dPipelineStateDesc.pRootSignature = pd3dGraphicsRootSignature;
 	m_d3dPipelineStateDesc.VS = CreateVertexShader();
+	m_d3dPipelineStateDesc.HS = CreateHullShader();
+	m_d3dPipelineStateDesc.DS = CreateDomainShader();
 	m_d3dPipelineStateDesc.PS = CreatePixelShader();
 	m_d3dPipelineStateDesc.RasterizerState = CreateRasterizerState();
 	m_d3dPipelineStateDesc.BlendState = CreateBlendState();
@@ -1794,7 +1798,10 @@ D3D12_RASTERIZER_DESC CTerrainTessellationShader::CreateRasterizerState(int nPip
 {
 	D3D12_RASTERIZER_DESC d3dRasterizerDesc;
 	::ZeroMemory(&d3dRasterizerDesc, sizeof(D3D12_RASTERIZER_DESC));
-	d3dRasterizerDesc.FillMode = D3D12_FILL_MODE_SOLID;
+	if(nPipelineState == 0)
+		d3dRasterizerDesc.FillMode = D3D12_FILL_MODE_SOLID;
+	else
+		d3dRasterizerDesc.FillMode = D3D12_FILL_MODE_WIREFRAME;
 	d3dRasterizerDesc.CullMode = D3D12_CULL_MODE_BACK;
 	d3dRasterizerDesc.FrontCounterClockwise = FALSE;
 	d3dRasterizerDesc.DepthBias = 0;
@@ -1813,12 +1820,16 @@ void CTerrainTessellationShader::CreateShader(ID3D12Device* pd3dDevice, ID3D12Gr
 {
 	m_nPipelineStates = 2;
 	m_ppd3dPipelineStates = new ID3D12PipelineState * [m_nPipelineStates];
-
+	
 	ID3DBlob* pd3dVertexShaderBlob = NULL, * pd3dPixelShaderBlob = NULL, * pd3dHullShaderBlob = NULL, * pd3dDomainShaderBlob = NULL;
 
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC d3dPipelineStateDesc;
 	::ZeroMemory(&d3dPipelineStateDesc, sizeof(D3D12_GRAPHICS_PIPELINE_STATE_DESC));
 	d3dPipelineStateDesc.pRootSignature = pd3dGraphicsRootSignature;
+	//d3dPipelineStateDesc.VS = CShader::CompileShaderFromFile(L"Shaders.hlsl", "VSTerrainTessellation", "vs_5_1", &pd3dVertexShaderBlob);
+	//d3dPipelineStateDesc.PS = CShader::CompileShaderFromFile(L"Shaders.hlsl", "PSTerrainTessellation", "ps_5_1", &pd3dPixelShaderBlob);
+	//d3dPipelineStateDesc.HS = CShader::CompileShaderFromFile(L"Shaders.hlsl", "HSTerrainTessellation", "hs_5_1", &pd3dHullShaderBlob);
+	//d3dPipelineStateDesc.DS = CShader::CompileShaderFromFile(L"Shaders.hlsl", "DSTerrainTessellation", "ds_5_1", &pd3dDomainShaderBlob);
 	d3dPipelineStateDesc.VS = CreateVertexShader();
 	d3dPipelineStateDesc.PS = CreatePixelShader();
 	d3dPipelineStateDesc.HS = CreateHullShader();

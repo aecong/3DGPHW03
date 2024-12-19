@@ -1177,18 +1177,18 @@ void CMi24Object::Animate(float fTimeElapsed, XMFLOAT4X4 *pxmf4x4Parent)
 //
 CHeightMapTerrain::CHeightMapTerrain(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, LPCTSTR pFileName, int nWidth, int nLength, int nBlockWidth, int nBlockLength, XMFLOAT3 xmf3Scale, XMFLOAT4 xmf4Color) : CGameObject(1)
 {
-	m_nWidth = nWidth;
-	m_nLength = nLength;
+	m_pHeightMapImage = new CHeightMapImage(pFileName, nWidth, nLength, xmf3Scale);
 
 	int cxQuadsPerBlock = nBlockWidth - 1;
 	int czQuadsPerBlock = nBlockLength - 1;
 
-	m_xmf3Scale = xmf3Scale;
+	long cxBlocks = (nWidth - 1) / cxQuadsPerBlock;
+	long czBlocks = (nLength - 1) / czQuadsPerBlock;
 
-	m_pHeightMapImage = new CHeightMapImage(pFileName, nWidth, nLength, xmf3Scale);
-	
-	long cxBlocks = (m_nWidth - 1) / cxQuadsPerBlock;
-	long czBlocks = (m_nLength - 1) / czQuadsPerBlock;
+	m_nWidth = nWidth;
+	m_nLength = nLength;
+
+	m_xmf3Scale = xmf3Scale;
 
 	m_nMeshes = cxBlocks * czBlocks;
 	m_ppMeshes = new CMesh * [m_nMeshes];

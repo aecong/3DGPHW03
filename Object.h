@@ -359,7 +359,7 @@ public:
 	virtual ~CHeightMapTerrain();
 
 private:
-	CHeightMapImage* m_pHeightMapImage;
+	CHeightMapImage* m_pHeightMapImage; 
 
 	int							m_nWidth;
 	int							m_nLength;
