@@ -1489,7 +1489,7 @@ CMirror::CMirror(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dComman
 
 	CTexture* pMirrorTexture = new CTexture(1, RESOURCE_TEXTURE2D, 0, 1, false);
 	pMirrorTexture->LoadTextureFromDDSFile(pd3dDevice, pd3dCommandList, L"Image/Lava(Emissive).dds", RESOURCE_TEXTURE2D, 0);
-	CScene::CreateShaderResourceViews(pd3dDevice, pMirrorTexture, 0, 5); // 3
+	CScene::CreateShaderResourceViews(pd3dDevice, pMirrorTexture, 0, 3); // 3
 
 	CMaterial* pMirrorMaterial = new CMaterial();
 	pMirrorMaterial->SetTexture(pMirrorTexture);
