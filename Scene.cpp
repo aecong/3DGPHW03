@@ -741,7 +741,7 @@ void CMainScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 	//int nObjects = pObjectsShader->GetNumberOfObjects();
 
 	m_pDescriptorHeap = new CDescriptorHeap();
-	CreateCbvSrvDescriptorHeaps(pd3dDevice, nBillboardObjects + /*nObjects*/ + 30 + 1 + 1 + 1 + 1, nBillboardObjects + 1 + /*nObjects*/ + 1 + 1); //SuperCobra(50), Player:Mi24(1), Skybox(1), Terrain(1)
+	CreateCbvSrvDescriptorHeaps(pd3dDevice, nBillboardObjects + /*nObjects*/ + 30 + 1 + 1 + 1 + 1 + 6, nBillboardObjects + 1 + /*nObjects*/ + 1 + 1 + 6); //SuperCobra(50), Player:Mi24(1), Skybox(1), Terrain(1)
 	
 	m_nParticleObjects = 1;
 	m_ppParticleObjects = new CParticleObject * [m_nParticleObjects];

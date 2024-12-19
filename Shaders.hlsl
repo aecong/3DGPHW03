@@ -29,6 +29,7 @@ cbuffer cbFrameworkInfo : register(b3)
     int gnFlareParticlesToEmit : packoffset(c0.w);
     float3 gf3Gravity : packoffset(c1.x);
     int gnMaxFlareType2Particles : packoffset(c1.w);
+	uint		gnRenderMode : packoffset(c2.x);
 };
 
 cbuffer cbMirrorObjectInfo : register(b5)
@@ -425,7 +426,7 @@ HS_TERRAIN_TESSELLATION_CONSTANT HSTerrainTessellationConstant(InputPatch<VS_TER
 {
     HS_TERRAIN_TESSELLATION_CONSTANT output;
 
-    if (DYNAMIC_TESSELLATION)
+    if (gnRenderMode & DYNAMIC_TESSELLATION)
     {
         float3 e0 = 0.5f * (input[0].positionW + input[4].positionW);
         float3 e1 = 0.5f * (input[0].positionW + input[20].positionW);
@@ -505,7 +506,7 @@ float4 PSTerrainTessellation(DS_TERRAIN_TESSELLATION_OUTPUT input) : SV_TARGET
 {
     float4 cColor = float4(0.0f, 0.0f, 0.0f, 1.0f);
 
-    if (DEBUG_TESSELLATION | DYNAMIC_TESSELLATION)
+    if (gnRenderMode & (DEBUG_TESSELLATION | DYNAMIC_TESSELLATION))
     {
         if (input.tessellation.w <= 5.0f)
             cColor = float4(1.0f, 0.0f, 0.0f, 1.0f);
