@@ -779,7 +779,7 @@ void CMainScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 	m_pBillboardObjectsShader->CreateShader(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 	m_pBillboardObjectsShader->BuildObjects(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, m_pTerrain);
 
-	/*m_nGameObjects = 10;
+	m_nGameObjects = 10;
 
 	m_ppGameObjects = new CGameObject * [m_nGameObjects];
 
@@ -800,7 +800,7 @@ void CMainScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 		CSkyIsland* pSkyIsland = new  CSkyIsland(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 		pSkyIsland->SetPosition(cubePositions[i]);
 		m_ppGameObjects[i] = pSkyIsland;
-	}*/
+	}
 
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
 }
