@@ -9,6 +9,8 @@
 
 int gnCurrentParticles = 0;
 
+bool gbTerrainTessellationWireframe = false;
+
 UINT gnRtvDescriptorIncrementSize = 0;
 UINT gnDsvDescriptorIncrementSize = 0;
 UINT gnCbvSrvDescriptorIncrementSize = 0;

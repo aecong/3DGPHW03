@@ -30,6 +30,8 @@ protected:
 	ID3DBlob* m_pd3dVertexShaderBlob = NULL;
 	ID3DBlob* m_pd3dPixelShaderBlob = NULL;
 	ID3DBlob* m_pd3dGeometryShaderBlob = NULL;
+	ID3DBlob* m_pd3dDomainShaderBlob = NULL;
+	ID3DBlob* m_pd3dHullShaderBlob = NULL;
 
 	int									m_nPipelineStates = 0;
 	ID3D12PipelineState** m_ppd3dPipelineStates = NULL;
@@ -355,5 +357,24 @@ public:
 
 };
 
+class CTerrainTessellationShader : public CShader
+{
+public:
+	CTerrainTessellationShader();
+	virtual ~CTerrainTessellationShader();
+
+	virtual D3D12_INPUT_LAYOUT_DESC CreateInputLayout(int nPipelineState = 0);
+	virtual D3D12_RASTERIZER_DESC CreateRasterizerState(int nPipelineState = 0);
+
+	virtual void CreateShader(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature);
+
+	virtual D3D12_SHADER_BYTECODE CreateVertexShader(int nPipelineState = 0);
+	virtual D3D12_SHADER_BYTECODE CreatePixelShader(int nPipelineState = 0);
+	virtual D3D12_SHADER_BYTECODE CreateDomainShader(int nPipelineState = 0);
+	virtual D3D12_SHADER_BYTECODE CreateHullShader(int nPipelineState = 0);
+
+	virtual void OnPrepareRender(ID3D12GraphicsCommandList* pd3dCommandList, int nPipelineState = 0);
+	//virtual void OnPrepareRender(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera, void* pContext);
+};
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
