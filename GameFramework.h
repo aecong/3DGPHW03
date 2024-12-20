@@ -98,7 +98,7 @@ private:
 
 	int							m_nScene = 0;
 	CScene						*m_pScene = NULL;
-	int							m_nCurrentScene = 2;
+	int							m_nCurrentScene = 0;
 
 	int							m_nScenes = 0;
 	CScene						**m_ppScenes = NULL;
